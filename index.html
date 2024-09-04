@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-<!-- Stop being a creep and looking at my code! -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat.AL</title>
+    <!-- Google Fonts Embed -->
     <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <style>
         body {
@@ -17,11 +17,13 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
+            border: 2px solid black; /* Border around the entire content */
+            padding: 20px; /* Padding to ensure content doesn't touch the border */
         }
         img {
-            width: 300px;
-            height: 300px;
-            margin-bottom: -20px;
+            width: 320px;
+            height: 320px;
+            margin-bottom: -35px;
         }
 
         /* HEADER */
@@ -34,6 +36,7 @@
 
         /* SUBHEADER */
         h2 {
+            margin-top: 0px;
             margin-bottom: 20px;
             font-family: 'Tiny5', Courier, monospace;
             font-size: 20pt;
@@ -52,31 +55,41 @@
         /* BUTTON CONTAINER */
         .button-container {
             display: flex;
-            align-items: center; /* Center items vertically */
+            justify-content: center; /* Center items horizontally */
+            width: 100%; /* Full width to center button */
+            margin-top: 10px;
         }
 
         /* GEN BUTTON */
         button {
-            padding: 10px 20px;
-            border: none;
+            margin: 0 10px; /* Space between buttons */
+            padding: 5px 20px; /* Adjust padding for better vertical alignment */
+            border: 2px solid transparent; /* Default border for non-regenerate button */
             border-radius: 5px;
-            background-color: #8ff9a0; /* Generate button color */
+            background-color: white; /* Generate button color */
             color: black;
             cursor: pointer;
             font-size: 16px;
             height: 35px; /* Ensure button height matches the icon */
+            width: 150px; /* Consistent width */
+            display: flex; /* Use flex to align text */
+            align-items: center; /* Center text vertically */
+            justify-content: center; /* Center text horizontally */
+            line-height: 1; /* Ensure line-height doesn't affect alignment */
         }
 
-         /* REGEN BUTTON */
-         button.regenerate {
-            background-color: #f8f670; /* Regenerate button color */
+        /* REGEN BUTTON */
+        button.regenerate {
+            background-color: black; /* Regenerate button color */
+            color: white;
+            border: 2px solid white;
         }
+
         button:disabled {
-            background-color: #333;
             cursor: not-allowed;
         }
         button:hover:not(:disabled) {
-            opacity: 0.9;
+            opacity: 1;
         }
 
         /* AUDIO ICON */
@@ -84,43 +97,65 @@
             width: 30px; /* Width of the icon */
             height: 30px; /* Height of the icon */
             cursor: pointer;
-            margin-top: -20px;
-            margin-left: 10px; /* Space between button and icon */
+            margin-top: 10px; /* Margin top to place below the response area */
+        }
+
+        /* RESPONSE CONTAINER */
+        .response-signature-container {
+            width: 320px; /* Adjust width to 320px */
+            height: 200px; /* Adjust height to 200px */
+            margin-top: 22px;
+            border: 2px solid white; /* White border around the container */
+            border-radius: 5px;
+            background-color: black; /* Black fill for the container */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px; /* Padding inside the container */
+            box-sizing: border-box; /* Include padding in the container's width and height */
+            overflow: hidden; /* Hide overflow to ensure text scales properly */
         }
 
         /* RESPONSE TEXT */
-        p.response {
-            margin-top: 30px;
-            font-size: 20pt;
+        .response {
             text-align: center;
             font-family: 'Comic Sans MS', cursive, sans-serif; /* Comic Sans italic */
             font-style: italic;
+            margin: 0; /* Remove margin to prevent overflow */
+            padding: 0;
+            line-height: 1.2; /* Adjust line-height for better readability */
         }
 
-        /* Signature */
-        .signature {
-            margin-top: 0; /* No margin to ensure it's right after the response */
-            font-size: 20pt;
-            font-family: 'Comic Sans MS', Courier, monospace; /* Courier New Regular */
+        /* AUDIO CONTAINER */
+        .audio-container {
+            display: flex;
+            justify-content: center; /* Center the audio icon */
+            width: 100%;
+            margin-top: 10px; /* Space above the audio icon */
         }
     </style>
 </head>
 <body>
-    <img src="FACE.jpg" alt="Image" id="topImage">
+    <img src="FACE.png" alt="Image" id="topImage">
     <h1>Chat.AL</h1>
     <h2>Your Alan AI Assistance.</h2>
     <input type="text" id="question" placeholder="Type your question here" oninput="checkInput()" onkeydown="checkEnter(event)">
     <div class="button-container">
         <button id="submitBtn" onclick="getResponse()">Generate</button>
+    </div>
+    <div class="response-signature-container">
+        <p id="response" class="response"></p>
+    </div>
+    <div class="audio-container">
         <img src="Audio_ON.svg" alt="Audio Icon" class="audio-icon" id="audioToggle" onclick="toggleAudio()">
     </div>
-    <p id="response" class="response"></p>
-    <p class="signature" id="signature"></p>
 
     <script>
         let typing = false; // Track whether typing is in progress
         let audioEnabled = true; // Audio is enabled by default
         let currentWord = ""; // To store the current word being typed
+        let lastResponse = ""; // Store the last response
 
         function checkEnter(event) {
             if (event.key === "Enter") {
@@ -150,125 +185,53 @@
 
             // Disable the button to prevent multiple clicks
             submitButton.disabled = true;
+            submitButton.textContent = "Loading"; // Change button text to "Loading"
 
             const responses = [
-                "Interesting question.",
-                "That’s something to think about.",
-                "It’s not clear.",
-                "I wonder about that too.",
-                "There are many ways to see it.",
-                "That could go in different directions.",
-                "That’s up for interpretation.",
-                "The answer may surprise you.",
-                "It’s worth pondering.",
-                "That’s a question for the ages.",
-                "The answer is out there.",
-                "That’s a tough one.",
-                "It depends on perspective.",
-                "Who’s to say?",
-                "That’s an open-ended question.",
-                "The possibilities are endless.",
-                "That’s a complex one.",
-                "It’s not for me to say.",
-                "That’s an interesting thought.",
-                "There are multiple angles.",
-                "It’s a bit of a mystery.",
-                "The answer might be closer than you think.",
-                "There’s more to it than meets the eye.",
-                "That’s worth exploring.",
-                "That could be anything.",
-                "That’s a question with many layers.",
-                "The answer may be just around the corner.",
-                "It’s hard to pin down.",
-                "That’s a deep question.",
-                "The answer might surprise you.",
-                "It’s anyone’s guess.",
-                "The answer could be out there.",
-                "There’s more than one way to look at it.",
-                "That’s a question that can’t be easily answered.",
-                "The possibilities are intriguing.",
-                "That’s a question without a clear answer.",
-                "It’s a question for another day.",
-                "There’s no one answer.",
-                "It’s an interesting idea.",
-                "That’s a question with no easy answer.",
-                "There’s more than meets the eye.",
-                "That’s not something easily answered.",
-                "The answer might be hidden.",
-                "It’s a question worth contemplating.",
-                "That’s a question that might not have a single answer.",
-                "There’s a lot to consider.",
-                "It’s a question with many possibilities.",
-                "The answer could vary.",
-                "That’s a thought-provoking question.",
-                "The answer might not be straightforward.",
-                "It’s a question with no definitive answer.",
-                "There’s a lot to unpack there.",
-                "It’s a question that could go many ways.",
-                "The answer might be elusive.",
-                "That’s a question with no simple answer.",
-                "There’s no telling.",
-                "It’s a question that could have many answers.",
-                "The answer might be closer than you think.",
-                "It’s a question worth asking.",
-                "There’s a lot of depth to that question.",
-                "It’s a question that could be explored further.",
-                "The answer might be out there.",
-                "It’s a question that defies easy answers.",
-                "The possibilities are intriguing.",
-                "That’s a question with no certain answer.",
-                "It’s a question that invites more questions.",
-                "There’s more to consider.",
-                "It’s a question that’s hard to answer.",
-                "The answer might be more complicated than it seems.",
-                "That’s a question that could take time to answer.",
-                "There’s no easy answer.",
-                "It’s a question that opens up more questions.",
-                "The answer might be found in time.",
-                "It’s a question that could have many interpretations.",
-                "There’s no way to know for sure.",
-                "It’s a question that could be answered in many ways.",
-                "The answer might change with time.",
-                "It’s a question that could have many outcomes.",
-                "There’s a lot of uncertainty.",
-                "It’s a question that invites thought.",
-                "The answer might depend on perspective.",
-                "It’s a question with no right or wrong answer.",
-                "There’s more to think about.",
-                "It’s a question that could have multiple answers.",
-                "The answer might be different for everyone.",
-                "It’s a question that leaves room for interpretation.",
-                "There’s no single answer.",
-                "It’s a question that might not have a clear answer.",
-                "The answer might evolve over time.",
-                "It’s a question that can’t be easily resolved.",
-                "There’s more than one way to answer that.",
-                "It’s a question that invites curiosity.",
-                "The answer might be found in the future.",
-                "It’s a question that could have a variety of answers.",
-                "There’s no clear-cut answer.",
-                "It’s a question that might remain unanswered.",
-                "The answer might be hidden in plain sight.",
-                "It’s a question that challenges easy answers.",
-                "There’s no definitive response.",
-                "It’s a question that might never be fully answered."
+                "Wouldn't you like to know.",
+                "Did you try to restart your computer?",
+                "I'm not feeling it right now, can you ask again?",
+                "I'm pretty sure you know the answer.",
+                "I'll get back to you in 5 minutes to an hour.",
+                "Oh we both know you know.",
+                "Did you try googling it?",
+                "When was the last time you flossed?",
+                "Yes, Jean-Claude Van Damme can still do the splits at the age of 63.",
+                "Error, Error, Error, *cough*, Error.",
+                "Sorry I need to go to the bathroom, I'll get back to you later.",
+                "The answer might be more complicated than it seems."
             ];
 
-            const randomIndex = Math.floor(Math.random() * responses.length);
-            const randomResponse = responses[randomIndex];
+            let randomIndex;
+            let randomResponse;
 
-            // Clear the previous response and signature before typing the new one
+            // Ensure the new response is different from the last one
+            do {
+                randomIndex = Math.floor(Math.random() * responses.length);
+                randomResponse = responses[randomIndex];
+            } while (randomResponse === lastResponse);
+
+            // Update lastResponse to the new one
+            lastResponse = randomResponse;
+
+            // Clear the previous response before typing the new one
             document.getElementById("response").textContent = "";
-            document.getElementById("signature").textContent = "";
             typing = true;
             currentWord = ""; // Reset the current word
-            typeLetterByLetter(`"${randomResponse}"`, 0, () => {
-                // After typing is complete, show the signature and enable the button
-                document.getElementById("signature").textContent = "- AL";
+
+            // Change the image to the talking GIF
+            document.getElementById("topImage").src = "FACE_Talk.gif";
+
+            typeLetterByLetter(randomResponse, 0, () => {
+                // After typing is complete, enable the button
                 document.getElementById("submitBtn").disabled = false;
                 document.getElementById("submitBtn").textContent = "Regenerate";
                 document.getElementById("submitBtn").classList.add('regenerate');
                 typing = false;
+                adjustFontSize(); // Adjust font size after typing is done
+                
+                // Revert the image back to the original static face
+                document.getElementById("topImage").src = "FACE.png";
             });
         }
 
@@ -280,35 +243,42 @@
 
                 // Check if the current character is a space or punctuation, which indicates the end of a word
                 if (currentChar === ' ' || i === text.length - 1 || [',', '.', '!', '?'].includes(currentChar)) {
-                    if (audioEnabled && currentWord.trim() !== "") {
-                        speakText(currentWord.trim().replace(/"/g, '')); // Speak the word without quotation marks
-                    }
-                    currentWord = ""; // Reset the current word after speaking it
+                    // Exclude quotation marks from the spoken text
+                    const spokenText = currentWord.trim().replace(/^"|"$/g, '');
+                    speakText(spokenText);
+                    currentWord = ""; // Reset the current word
                 }
 
-                setTimeout(function() {
-                    typeLetterByLetter(text, i + 1, callback);
-                }, 100); // Adjust typing speed by changing the delay (in milliseconds)
+                setTimeout(() => typeLetterByLetter(text, i + 1, callback), 100);
             } else if (callback) {
                 callback();
             }
         }
 
         function speakText(text) {
-            // Ensure the text does not include quotation marks and handle the speaking
-            const cleanedText = text.replace(/"/g, '');
-            const utterance = new SpeechSynthesisUtterance(cleanedText);
-            utterance.rate = 1.2; // Adjust the speech rate if needed
-            window.speechSynthesis.speak(utterance);
+            if (audioEnabled) {
+                const utterance = new SpeechSynthesisUtterance(text);
+                speechSynthesis.speak(utterance);
+            }
         }
 
         function toggleAudio() {
             audioEnabled = !audioEnabled;
             const audioIcon = document.getElementById("audioToggle");
-            if (audioEnabled) {
-                audioIcon.src = "Audio_ON.svg"; // Replace with the URL for the audio on icon
-            } else {
-                audioIcon.src = "Audio_OFF.svg"; // Replace with the URL for the audio off icon
+            audioIcon.src = audioEnabled ? "Audio_ON.svg" : "Audio_OFF.svg";
+        }
+
+        function adjustFontSize() {
+            const responseContainer = document.querySelector('.response-signature-container');
+            const responseText = document.getElementById('response');
+
+            let fontSize = 20; // Starting font size in points
+            responseText.style.fontSize = fontSize + "pt"; // Set initial font size
+
+            // Decrease font size until text fits within the container
+            while (responseText.scrollHeight > responseContainer.clientHeight && fontSize > 12) {
+                fontSize--;
+                responseText.style.fontSize = fontSize + "pt";
             }
         }
     </script>
