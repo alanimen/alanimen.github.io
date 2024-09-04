@@ -156,6 +156,14 @@
         let audioEnabled = true; // Audio is enabled by default
         let currentWord = ""; // To store the current word being typed
         let lastResponse = ""; // Store the last response
+        let responsesWithoutQuestion = [
+            "I believe you forgot to add a question mark at the end of your sentence.",
+            "That doesn't look like a question... did you forget the question mark?",
+            "Error. *Cough* Question mark needed.",
+            "I'm not ChatGPT, use a question mark.",
+            "Don't be lazy, use a question mark.",
+            "Question mark needed. Please try again."
+        ];
 
         function checkEnter(event) {
             if (event.key === "Enter") {
@@ -183,23 +191,47 @@
                 return;
             }
 
+            // Check if the input ends with a question mark
+            const inputText = inputField.value.trim();
+            if (inputText.endsWith("?")) {
+                // Generate response if the input ends with a question mark
+                generateResponse(inputText);
+            } else {
+                // Generate a prompt to ask for a question mark
+                generatePrompt();
+            }
+
             // Disable the button to prevent multiple clicks
             submitButton.disabled = true;
             submitButton.textContent = "Loading"; // Change button text to "Loading"
+        }
 
+        function generateResponse(inputText) {
             const responses = [
-                "Wouldn't you like to know.",
+                "That's a great question.",
                 "Did you try to restart your computer?",
-                "I'm not feeling it right now, can you ask again?",
+                "I'm not feeling it right now, can you ask again later?",
                 "I'm pretty sure you know the answer.",
                 "I'll get back to you in 5 minutes to an hour.",
                 "Oh we both know you know.",
-                "Did you try googling it?",
+                "Did you try googling it first?",
+                "Did you try going to your local public library first?",
+                "Have you renewed your car insurance?",
+                "What a wonderful input, let's dive more into it at a later date.",
+                "I'll continue to look into this for you.",
+                "Thank you for bringing this to my attention.",
+                "I've written this down and will get back to you soon.",
+                "Sorry, I'm on the phone with Comcast. Can you get back to me later?",
+                "Pretty sure that answer is just 2 or maybe C?",
+                "Let's look at that from a different perspective, like a bear's view.",
                 "When was the last time you flossed?",
                 "Yes, Jean-Claude Van Damme can still do the splits at the age of 63.",
-                "Error, Error, Error, *cough*, Error.",
                 "Sorry I need to go to the bathroom, I'll get back to you later.",
-                "The answer might be more complicated than it seems."
+                "That sounds inappropriate. I might need to inform HR.",
+                "You just blew my mind. I need to think about this.",
+                "How dare you ask that on today of all days.",
+                "It's always a good idea to take a break and look at the problem again.",
+                "I need to do more research on this topic."
             ];
 
             let randomIndex;
@@ -235,6 +267,30 @@
             });
         }
 
+        function generatePrompt() {
+            const prompt = responsesWithoutQuestion[Math.floor(Math.random() * responsesWithoutQuestion.length)];
+
+            // Clear the previous response before typing the new one
+            document.getElementById("response").textContent = "";
+            typing = true;
+            currentWord = ""; // Reset the current word
+
+            // Change the image to the talking GIF
+            document.getElementById("topImage").src = "FACE_Talk.gif";
+
+            typeLetterByLetter(prompt, 0, () => {
+                // After typing is complete, enable the button
+                document.getElementById("submitBtn").disabled = false;
+                document.getElementById("submitBtn").textContent = "Generate";
+                document.getElementById("submitBtn").classList.remove('regenerate');
+                typing = false;
+                adjustFontSize(); // Adjust font size after typing is done
+                
+                // Revert the image back to the original static face
+                document.getElementById("topImage").src = "FACE.png";
+            });
+        }
+
         function typeLetterByLetter(text, i, callback) {
             if (i < text.length) {
                 const currentChar = text.charAt(i);
@@ -258,6 +314,12 @@
         function speakText(text) {
             if (audioEnabled) {
                 const utterance = new SpeechSynthesisUtterance(text);
+                utterance.onend = function() {
+                    // Check if typing is done and change image
+                    if (!typing) {
+                        document.getElementById("topImage").src = "FACE.png";
+                    }
+                };
                 speechSynthesis.speak(utterance);
             }
         }
