@@ -61,8 +61,8 @@
             margin-right: 10px;
         }
 
-        /* REGEN BUTTON */
-        button.regenerate {
+         /* REGEN BUTTON */
+         button.regenerate {
             background-color: #f8f670; /* Regenerate button color */
         }
         button:disabled {
@@ -75,9 +75,9 @@
 
         /* AUDIO ICON */
         .audio-icon {
+            width: 40px; /* Same height as button */
+            height: 40px; /* Same height as button */
             cursor: pointer;
-            width: 24px;
-            height: 24px;
         }
 
         /* RESPONSE TEXT */
@@ -98,13 +98,13 @@
     </style>
 </head>
 <body>
-    <img src="FACE.jpg" alt="Image" id="topImage">
+    <img src="https://ca.slack-edge.com/TF9GXNPF1-UFUCUFL6B-ec017adcc6ef-512" alt="Image" id="topImage">
     <h1>Chat.AL</h1>
     <h2>Your Alan AI Assistance.</h2>
     <input type="text" id="question" placeholder="Type your question here" oninput="checkInput()" onkeydown="checkEnter(event)">
-    <div>
+    <div class="button-container">
         <button id="submitBtn" onclick="getResponse()">Generate</button>
-        <img src="Audio_ON.png" alt="Audio Icon" class="Audio_OFF" onclick="toggleAudio()">
+        <img src="Audio_ON.png" alt="Audio Icon" class="audio-icon" id="audioToggle" onclick="toggleAudio()">
     </div>
     <p id="response" class="response"></p>
     <p class="signature" id="signature"></p>
@@ -203,9 +203,9 @@
             audioEnabled = !audioEnabled;
             const audioIcon = document.getElementById("audioToggle");
             if (audioEnabled) {
-                audioIcon.src = "Audio_ON.png"; // Audio on icon
+                audioIcon.src = "Audio_ON.png"; // Replace with the URL for the audio on icon
             } else {
-                audioIcon.src = "Audio_OFF.png"; // Audio off icon
+                audioIcon.src = "Audio_OFF.png"; // Replace with the URL for the audio off icon
             }
         }
     </script>
