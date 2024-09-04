@@ -1,3 +1,5 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,14 +21,18 @@
         img {
             width: 300px;
             height: 300px;
-            margin-bottom: 0px;
+            margin-bottom: -20px;
         }
+
+        /* HEADER */
         h1 {
-            margin-bottom: 5px;
+            margin-bottom: 0px;
             font-family: 'Tiny5', Courier, monospace;
             font-size: 50pt;
             font-weight: normal;
         }
+
+        /* SUBHEADER */
         h2 {
             margin-bottom: 20px;
             font-family: 'Tiny5', Courier, monospace;
@@ -42,6 +48,8 @@
             text-align: center;
             font-size: 20px;
         }
+
+        /* GEN BUTTON */
         button {
             padding: 10px 20px;
             border: none;
@@ -50,7 +58,10 @@
             color: black;
             cursor: pointer;
             font-size: 16px;
+            margin-right: 10px;
         }
+
+        /* REGEN BUTTON */
         button.regenerate {
             background-color: #f8f670; /* Regenerate button color */
         }
@@ -61,13 +72,24 @@
         button:hover:not(:disabled) {
             opacity: 0.9;
         }
+
+        /* AUDIO ICON */
+        .audio-icon {
+            cursor: pointer;
+            width: 24px;
+            height: 24px;
+        }
+
+        /* RESPONSE TEXT */
         p.response {
-            margin-top: 20px;
+            margin-top: 30px;
             font-size: 20pt;
             text-align: center;
             font-family: 'Comic Sans MS', cursive, sans-serif; /* Comic Sans italic */
             font-style: italic;
         }
+
+        /* Signature */
         .signature {
             margin-top: 0; /* No margin to ensure it's right after the response */
             font-size: 20pt;
@@ -80,12 +102,17 @@
     <h1>Chat.AL</h1>
     <h2>Your Alan AI Assistance.</h2>
     <input type="text" id="question" placeholder="Type your question here" oninput="checkInput()" onkeydown="checkEnter(event)">
-    <button id="submitBtn" onclick="getResponse()">Generate</button>
+    <div>
+        <button id="submitBtn" onclick="getResponse()">Generate</button>
+        <img src="https://image.flaticon.com/icons/png/512/727/727245.png" alt="Audio Icon" class="audio-icon" id="audioToggle" onclick="toggleAudio()">
+    </div>
     <p id="response" class="response"></p>
     <p class="signature" id="signature"></p>
 
     <script>
         let typing = false; // Track whether typing is in progress
+        let audioEnabled = true; // Audio is enabled by default
+        let currentWord = ""; // To store the current word being typed
 
         function checkEnter(event) {
             if (event.key === "Enter") {
@@ -131,7 +158,8 @@
             document.getElementById("response").textContent = "";
             document.getElementById("signature").textContent = "";
             typing = true;
-            typeWriter(`"${randomResponse}"`, 0, () => {
+            currentWord = ""; // Reset the current word
+            typeLetterByLetter(`"${randomResponse}"`, 0, () => {
                 // After typing is complete, show the signature and enable the button
                 document.getElementById("signature").textContent = "- AL";
                 document.getElementById("submitBtn").disabled = false;
@@ -141,14 +169,43 @@
             });
         }
 
-        function typeWriter(text, i, callback) {
+        function typeLetterByLetter(text, i, callback) {
             if (i < text.length) {
-                document.getElementById("response").textContent += text.charAt(i);
+                const currentChar = text.charAt(i);
+                document.getElementById("response").textContent += currentChar;
+                currentWord += currentChar;
+
+                // Check if the current character is a space or punctuation, which indicates the end of a word
+                if (currentChar === ' ' || i === text.length - 1 || [',', '.', '!', '?'].includes(currentChar)) {
+                    if (audioEnabled && currentWord.trim() !== "") {
+                        speakText(currentWord.trim().replace(/"/g, '')); // Speak the word without quotation marks
+                    }
+                    currentWord = ""; // Reset the current word after speaking it
+                }
+
                 setTimeout(function() {
-                    typeWriter(text, i + 1, callback);
+                    typeLetterByLetter(text, i + 1, callback);
                 }, 100); // Adjust typing speed by changing the delay (in milliseconds)
             } else if (callback) {
                 callback();
+            }
+        }
+
+        function speakText(text) {
+            // Ensure the text does not include quotation marks and handle the speaking
+            const cleanedText = text.replace(/"/g, '');
+            const utterance = new SpeechSynthesisUtterance(cleanedText);
+            utterance.rate = 1.2; // Adjust the speech rate if needed
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const audioIcon = document.getElementById("audioToggle");
+            if (audioEnabled) {
+                audioIcon.src = "Audio_ON.png"; // Audio on icon
+            } else {
+                audioIcon.src = "Audio_OFF.png"; // Audio off icon
             }
         }
     </script>
