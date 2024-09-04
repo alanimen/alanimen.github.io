@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Response Website</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        img {
+            width: 300px;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 5px;
+            font-family: 'Courier New', Courier, monospace; /* Courier New Bold */
+            font-size: 40pt;
+            font-weight: bold;
+        }
+        h2 {
+            margin-bottom: 20px;
+            font-family: 'Courier New', Courier, monospace; /* Courier New Regular */
+            font-size: 20pt;
+            font-weight: normal;
+        }
+        input[type="text"] {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            width: 300px;
+            text-align: center;
+            font-size: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #8ff9a0; /* Generate button color */
+            color: black;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button.regenerate {
+            background-color: #f8f670; /* Regenerate button color */
+        }
+        button:disabled {
+            background-color: #333;
+            cursor: not-allowed;
+        }
+        button:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+        p.response {
+            margin-top: 10px;
+            font-size: 30pt;
+            text-align: center;
+            font-family: 'Comic Sans MS', cursive, sans-serif; /* Comic Sans italic */
+            font-style: italic;
+        }
+        .signature {
+            margin-top: 0; /* No margin to ensure it's right after the response */
+            font-size: 20pt;
+            font-family: 'Courier New', Courier, monospace; /* Courier New Regular */
+        }
+    </style>
+</head>
+<body>
+    <img src="https://ca.slack-edge.com/TF9GXNPF1-UFUCUFL6B-ec017adcc6ef-512" alt="Image" id="topImage">
+    <h1>Chat.AL</h1>
+    <h2>Your Alan AI Assistance.</h2>
+    <input type="text" id="question" placeholder="Type your question here" oninput="checkInput()" onkeydown="checkEnter(event)">
+    <button id="submitBtn" onclick="getResponse()">Generate</button>
+    <p id="response" class="response"></p>
+    <p class="signature" id="signature"></p>
+
+    <script>
+        let typing = false; // Track whether typing is in progress
+
+        function checkEnter(event) {
+            if (event.key === "Enter") {
+                getResponse();
+            }
+        }
+
+        function checkInput() {
+            const inputField = document.getElementById("question");
+            const submitButton = document.getElementById("submitBtn");
+
+            // Reset the button text to "Generate" if the input field is blank or contains only spaces
+            if (inputField.value.trim() === "") {
+                submitButton.textContent = "Generate";
+                submitButton.classList.remove('regenerate');
+            }
+        }
+
+        function getResponse() {
+            const inputField = document.getElementById("question");
+            const submitButton = document.getElementById("submitBtn");
+
+            // Do nothing if the input is blank or only contains spaces
+            if (inputField.value.trim() === "" || typing) {
+                return;
+            }
+
+            // Disable the button to prevent multiple clicks
+            submitButton.disabled = true;
+
+            const responses = [
+                "Interesting question.",
+                "That’s something to think about.",
+                "It’s not clear.",
+                "I wonder about that too.",
+                "There are many ways to see it."
+            ];
+
+            const randomIndex = Math.floor(Math.random() * responses.length);
+            const randomResponse = responses[randomIndex];
+
+            // Clear the previous response and signature before typing the new one
+            document.getElementById("response").textContent = "";
+            document.getElementById("signature").textContent = "";
+            typing = true;
+            typeWriter(`"${randomResponse}"`, 0, () => {
+                // After typing is complete, show the signature and enable the button
+                document.getElementById("signature").textContent = "- AL";
+                document.getElementById("submitBtn").disabled = false;
+                document.getElementById("submitBtn").textContent = "Regenerate";
+                document.getElementById("submitBtn").classList.add('regenerate');
+                typing = false;
+            });
+        }
+
+        function typeWriter(text, i, callback) {
+            if (i < text.length) {
+                document.getElementById("response").textContent += text.charAt(i);
+                setTimeout(function() {
+                    typeWriter(text, i + 1, callback);
+                }, 100); // Adjust typing speed by changing the delay (in milliseconds)
+            } else if (callback) {
+                callback();
+            }
+        }
+    </script>
+</body>
+</html>
