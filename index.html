@@ -124,7 +124,7 @@
         /* RESPONSE TEXT */
         .response {
             text-align: center;
-            font-family: 'Comic Sans MS', cursive, sans-serif;
+            font-family: 'Comic Sans MS', Courier, monospace;
             font-style: italic;
             margin: 0;
             padding: 0;
@@ -292,19 +292,38 @@
                 callback();
             }
         }
-        function speakText(text) {
-            
-            if (audioEnabled) {
-                const utterance = new SpeechSynthesisUtterance(text);
-                utterance.onend = function() {
-                    
-                    if (!typing) {
-                        document.getElementById("topImage").src = "FACE.png";
-                    }
-                };
-                speechSynthesis.speak(utterance);
+        
+        let voices = [];
+
+function loadVoices() {
+    voices = speechSynthesis.getVoices();
+    if (!voices.length) {
+        speechSynthesis.onvoiceschanged = () => {
+            voices = speechSynthesis.getVoices();
+        };
+    }
+}
+
+loadVoices();
+
+function speakText(text) {
+    if (audioEnabled) {
+        const utterance = new SpeechSynthesisUtterance(text);
+
+        if (voices.length) {
+            const maleVoice = voices.find(voice => 
+                voice.name.includes("Alex") || voice.name.includes("David") || voice.name.includes("Daniel") || voice.gender === "male"
+            );
+
+            if (maleVoice) {
+                utterance.voice = maleVoice;
             }
         }
+
+        speechSynthesis.speak(utterance);
+    }
+}
+        
         function toggleAudio() {
             audioEnabled = !audioEnabled;
             const audioIcon = document.getElementById("audioToggle");
