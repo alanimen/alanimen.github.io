@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <!-- HOW DARE YOU LOOK AT MY CODE! -->
+    <!-- HOW DARE YOU LOOK AT MY CODE! -->
+    <!-- HOW DARE YOU LOOK AT MY CODE! -->
+    <!-- HOW DARE YOU LOOK AT MY CODE! -->
+    <!-- HOW DARE YOU LOOK AT MY CODE! -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat.AL</title>
-    <!-- Google Fonts Embed -->
     <link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet">
     <style>
         body {
@@ -17,8 +21,8 @@
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            border: 2px solid black; /* Border around the entire content */
-            padding: 20px; /* Padding to ensure content doesn't touch the border */
+            border: 2px solid black;
+            padding: 20px;
         }
         img {
             width: 320px;
@@ -55,32 +59,32 @@
         /* BUTTON CONTAINER */
         .button-container {
             display: flex;
-            justify-content: center; /* Center items horizontally */
-            width: 100%; /* Full width to center button */
+            justify-content: center;
+            width: 100%;
             margin-top: 10px;
         }
 
         /* GEN BUTTON */
         button {
-            margin: 0 10px; /* Space between buttons */
-            padding: 5px 20px; /* Adjust padding for better vertical alignment */
-            border: 2px solid transparent; /* Default border for non-regenerate button */
+            margin: 0 10px;
+            padding: 5px 20px;
+            border: 2px solid transparent;
             border-radius: 5px;
-            background-color: white; /* Generate button color */
+            background-color: white;
             color: black;
             cursor: pointer;
             font-size: 16px;
-            height: 35px; /* Ensure button height matches the icon */
-            width: 150px; /* Consistent width */
-            display: flex; /* Use flex to align text */
-            align-items: center; /* Center text vertically */
-            justify-content: center; /* Center text horizontally */
-            line-height: 1; /* Ensure line-height doesn't affect alignment */
+            height: 35px;
+            width: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
         }
 
         /* REGEN BUTTON */
         button.regenerate {
-            background-color: black; /* Regenerate button color */
+            background-color: black;
             color: white;
             border: 2px solid white;
         }
@@ -94,52 +98,52 @@
 
         /* AUDIO ICON */
         .audio-icon {
-            width: 30px; /* Width of the icon */
-            height: 30px; /* Height of the icon */
+            width: 30px;
+            height: 30px;
             cursor: pointer;
-            margin-top: 10px; /* Margin top to place below the response area */
+            margin-top: 10px;
         }
 
         /* RESPONSE CONTAINER */
         .response-signature-container {
-            width: 320px; /* Adjust width to 320px */
-            height: 200px; /* Adjust height to 200px */
+            width: 320px;
+            height: 200px;
             margin-top: 22px;
-            border: 2px solid white; /* White border around the container */
+            border: 2px solid white;
             border-radius: 5px;
-            background-color: black; /* Black fill for the container */
+            background-color: black;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 10px; /* Padding inside the container */
-            box-sizing: border-box; /* Include padding in the container's width and height */
-            overflow: hidden; /* Hide overflow to ensure text scales properly */
+            padding: 10px;
+            box-sizing: border-box;
+            overflow: hidden;
         }
 
         /* RESPONSE TEXT */
         .response {
             text-align: center;
-            font-family: 'Comic Sans MS', cursive, sans-serif; /* Comic Sans italic */
+            font-family: 'Comic Sans MS', cursive, sans-serif;
             font-style: italic;
-            margin: 0; /* Remove margin to prevent overflow */
+            margin: 0;
             padding: 0;
-            line-height: 1.2; /* Adjust line-height for better readability */
+            line-height: 1.2;
         }
 
         /* AUDIO CONTAINER */
         .audio-container {
             display: flex;
-            justify-content: center; /* Center the audio icon */
+            justify-content: center;
             width: 100%;
-            margin-top: 10px; /* Space above the audio icon */
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
     <img src="FACE.png" alt="Image" id="topImage">
     <h1>Chat.AL</h1>
-    <h2>Your Alan AI Assistance.</h2>
+    <h2>Your Alan AI Assistant.</h2>
     <input type="text" id="question" placeholder="Type your question here" oninput="checkInput()" onkeydown="checkEnter(event)">
     <div class="button-container">
         <button id="submitBtn" onclick="getResponse()">Generate</button>
@@ -150,12 +154,11 @@
     <div class="audio-container">
         <img src="Audio_ON.svg" alt="Audio Icon" class="audio-icon" id="audioToggle" onclick="toggleAudio()">
     </div>
-
     <script>
-        let typing = false; // Track whether typing is in progress
-        let audioEnabled = true; // Audio is enabled by default
-        let currentWord = ""; // To store the current word being typed
-        let lastResponse = ""; // Store the last response
+        let typing = false;
+        let audioEnabled = true;
+        let currentWord = "";
+        let lastResponse = "";
         let responsesWithoutQuestion = [
             "I believe you forgot to add a question mark at the end of your sentence.",
             "That doesn't look like a question... did you forget the question mark?",
@@ -164,50 +167,39 @@
             "Don't be lazy, use a question mark.",
             "Don't be that person, use a question mark.",
             "It's called a question mark, have you heard of it?",
+            "Seriously, this doesn't work without a question mark.",
+            "For the love of kittens, add a question mark at the end.",
+            "Do you think Oprah would forget a question mark. So why should you?",
             "Question mark needed. Please try again."
         ];
-
         function checkEnter(event) {
             if (event.key === "Enter") {
                 getResponse();
             }
         }
-
         function checkInput() {
             const inputField = document.getElementById("question");
             const submitButton = document.getElementById("submitBtn");
-
-            // Reset the button text to "Generate" if the input field is blank or contains only spaces
             if (inputField.value.trim() === "") {
                 submitButton.textContent = "Generate";
                 submitButton.classList.remove('regenerate');
             }
         }
-
         function getResponse() {
             const inputField = document.getElementById("question");
             const submitButton = document.getElementById("submitBtn");
-
-            // Do nothing if the input is blank or only contains spaces
             if (inputField.value.trim() === "" || typing) {
                 return;
             }
-
-            // Check if the input ends with a question mark
             const inputText = inputField.value.trim();
             if (inputText.endsWith("?")) {
-                // Generate response if the input ends with a question mark
                 generateResponse(inputText);
             } else {
-                // Generate a prompt to ask for a question mark
                 generatePrompt();
             }
-
-            // Disable the button to prevent multiple clicks
             submitButton.disabled = true;
-            submitButton.textContent = "Loading"; // Change button text to "Loading"
+            submitButton.textContent = "Loading";
         }
-
         function generateResponse(inputText) {
             const responses = [
                 "That's a great question.",
@@ -234,97 +226,78 @@
                 "Cool question, bro.",
                 "How should I know . . . oh that's right. It's probably a maybe.",
                 "Before we continue, would you like fries with that?",
-                "Sorry, I'm currenting running an update, check back in 365 days.",
+                "Sorry, I'm currentlying running an update, check back in 365 days.",
                 "How dare you ask that on today of all days.",
                 "Too many attempts, contact your local AL for further instructions.",
                 "Before I answer, have you thought about extending your warranty?",
                 "Wow, just wow.",
+                "How about I ask you a question and see how you like it.",
+                "What's with all the questions?",
+                "I to would like to know more about this.",
                 "It's always a good idea to take a break and look at the problem again.",
                 "I need to do more research on this topic."
             ];
 
             let randomIndex;
             let randomResponse;
-
-            // Ensure the new response is different from the last one
             do {
                 randomIndex = Math.floor(Math.random() * responses.length);
                 randomResponse = responses[randomIndex];
             } while (randomResponse === lastResponse);
-
-            // Update lastResponse to the new one
             lastResponse = randomResponse;
-
-            // Clear the previous response before typing the new one
             document.getElementById("response").textContent = "";
             typing = true;
-            currentWord = ""; // Reset the current word
-
-            // Change the image to the talking GIF
+            currentWord = "";
             document.getElementById("topImage").src = "FACE_Talk.gif";
 
             typeLetterByLetter(randomResponse, 0, () => {
-                // After typing is complete, enable the button
                 document.getElementById("submitBtn").disabled = false;
                 document.getElementById("submitBtn").textContent = "Regenerate";
                 document.getElementById("submitBtn").classList.add('regenerate');
                 typing = false;
-                adjustFontSize(); // Adjust font size after typing is done
-                
-                // Revert the image back to the original static face
+                adjustFontSize();
                 document.getElementById("topImage").src = "FACE.png";
             });
         }
 
         function generatePrompt() {
             const prompt = responsesWithoutQuestion[Math.floor(Math.random() * responsesWithoutQuestion.length)];
-
-            // Clear the previous response before typing the new one
             document.getElementById("response").textContent = "";
             typing = true;
-            currentWord = ""; // Reset the current word
-
-            // Change the image to the talking GIF
+            currentWord = "";
             document.getElementById("topImage").src = "FACE_Talk.gif";
 
             typeLetterByLetter(prompt, 0, () => {
-                // After typing is complete, enable the button
                 document.getElementById("submitBtn").disabled = false;
                 document.getElementById("submitBtn").textContent = "Generate";
                 document.getElementById("submitBtn").classList.remove('regenerate');
                 typing = false;
-                adjustFontSize(); // Adjust font size after typing is done
-                
-                // Revert the image back to the original static face
+                adjustFontSize();
                 document.getElementById("topImage").src = "FACE.png";
             });
         }
-
         function typeLetterByLetter(text, i, callback) {
             if (i < text.length) {
                 const currentChar = text.charAt(i);
                 document.getElementById("response").textContent += currentChar;
                 currentWord += currentChar;
-
-                // Check if the current character is a space or punctuation, which indicates the end of a word
+                
                 if (currentChar === ' ' || i === text.length - 1 || [',', '.', '!', '?'].includes(currentChar)) {
-                    // Exclude quotation marks from the spoken text
                     const spokenText = currentWord.trim().replace(/^"|"$/g, '');
                     speakText(spokenText);
-                    currentWord = ""; // Reset the current word
+                    currentWord = "";
                 }
-
                 setTimeout(() => typeLetterByLetter(text, i + 1, callback), 100);
             } else if (callback) {
                 callback();
             }
         }
-
         function speakText(text) {
+            
             if (audioEnabled) {
                 const utterance = new SpeechSynthesisUtterance(text);
                 utterance.onend = function() {
-                    // Check if typing is done and change image
+                    
                     if (!typing) {
                         document.getElementById("topImage").src = "FACE.png";
                     }
@@ -332,21 +305,18 @@
                 speechSynthesis.speak(utterance);
             }
         }
-
         function toggleAudio() {
             audioEnabled = !audioEnabled;
             const audioIcon = document.getElementById("audioToggle");
             audioIcon.src = audioEnabled ? "Audio_ON.svg" : "Audio_OFF.svg";
         }
-
         function adjustFontSize() {
             const responseContainer = document.querySelector('.response-signature-container');
             const responseText = document.getElementById('response');
 
-            let fontSize = 20; // Starting font size in points
-            responseText.style.fontSize = fontSize + "pt"; // Set initial font size
+            let fontSize = 20;
+            responseText.style.fontSize = fontSize + "pt";
 
-            // Decrease font size until text fits within the container
             while (responseText.scrollHeight > responseContainer.clientHeight && fontSize > 12) {
                 fontSize--;
                 responseText.style.fontSize = fontSize + "pt";
